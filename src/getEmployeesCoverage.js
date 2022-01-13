@@ -1,17 +1,32 @@
-const data = require('../data/zoo_data');
+const { employees, species } = require('../data/zoo_data');
 
-const { employees, species} = data;
-// Encontre funcionário através do param
+// Encontre funcionário através do param e captura info
 function findEmployees(obj) {
-  return employees.find((e) => Object.values(e).includes(obj.name || obj.id)).responsibleFor;
+  const objFunci = employees.find((funcio) => Object.values(funcio).includes(obj.name || obj.id));
+  const arrAnimal = objFunci.responsibleFor;
+  const findAnimal = arrAnimal.map((animal) => species.find(({ id }) => id === animal).name);
+  const findLocation = arrAnimal.map((animal) => species.find(({ id }) => id === animal).location);
+  // Captura info e monta objeto:
+  const objInfoFunci = {
+    id: objFunci.id,
+    fullName: `${objFunci.firstName} ${objFunci.lastName}`,
+    species: findAnimal,
+    locations: findLocation,
+  };
+  return objInfoFunci;
 }
-// Capture espécie pelo Id
-const findAnimal = ((findEmployees()) => species.find((s) => findEmployees.find((f) => s.id === f)));
+function getEmployeesCoverage(param) {
+  if (!param) {
+    const arrCoverage = [];
+    employees.forEach((e) => arrCoverage.push(findEmployees({ id: e.id })));
+    return arrCoverage;
+  }
+  try {
+    return findEmployees(param);
+  } catch (error) {
+    throw new Error('Informações inválidas');
+  }
+}
 
-console.log(findAnimal());
-console.log(findEmployees({ name: 'Sharonda' }))
-// function getEmployeesCoverage() {
-//   // seu código aqui
-// }
-
+// console.log(getEmployeesCoverage());
 module.exports = getEmployeesCoverage;
